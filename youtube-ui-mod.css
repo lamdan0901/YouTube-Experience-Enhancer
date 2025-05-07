@@ -1,0 +1,33 @@
+/* YouTube UI Modification Styles */
+
+/* Only apply UI modifications when screen width is above the threshold */
+html[data-yt-ui-mod="true"] .yt-save-button-mod {
+  display: flex !important;
+}
+
+html[data-yt-ui-mod="false"] .yt-save-button-mod {
+  display: none !important;
+}
+
+/* Style for the Save button */
+.yt-save-button-mod {
+  display: none;
+  align-items: center;
+  margin-left: 8px;
+}
+
+/* Make sure the button has the same styling as other action buttons */
+.yt-save-button-mod button {
+  display: flex;
+  align-items: center;
+}
+
+/* Hide the Save option in the dropdown when our custom button is visible */
+html[data-yt-ui-mod="true"] .yt-dropdown-save-option {
+  display: none !important;
+}
+
+/* Ensure proper spacing between buttons */
+#top-level-buttons-computed > * {
+  margin-right: 8px;
+}

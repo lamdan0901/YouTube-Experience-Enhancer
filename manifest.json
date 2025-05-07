@@ -8,8 +8,8 @@
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
-      "css": ["styles.css"],
-      "js": ["content.js"]
+      "css": ["styles.css", "youtube-ui-mod.css"],
+      "js": ["content.js", "youtube-ui-mod.js"]
     }
   ],
   "action": {
