@@ -25,6 +25,27 @@
         </div>
       </div>
 
+      <div class="mt-3">
+        <label
+          for="minScreenWidth"
+          class="block text-sm/6 font-medium text-gray-900"
+          >Minimum Screen Width (px):</label
+        >
+        <div class="mt-2">
+          <input
+            type="number"
+            name="minScreenWidth"
+            id="minScreenWidth"
+            min="0"
+            value="1740"
+            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-600 sm:text-sm/6"
+          />
+        </div>
+        <p class="text-xs text-gray-500 mt-1">
+          Custom columns will only apply above this width
+        </p>
+      </div>
+
       <div class="flex gap-3 mt-2">
         <div class="flex h-6 shrink-0 items-center">
           <div class="group grid size-4 grid-cols-1">
@@ -112,7 +133,6 @@
         Save
       </button>
     </div>
-
 
     <p class="mt-3 text-gray-400">Copyright © 2025 TuanMinPay</p>
     <script src="popup.js"></script>

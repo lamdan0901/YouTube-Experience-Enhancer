@@ -1,9 +1,15 @@
-ytd-rich-grid-renderer,
-ytd-rich-shelf-renderer {
-    --ytd-rich-grid-items-per-row: var(--youtube-columns, 5) !important;
+:root {
+  --apply-custom-columns: false;
 }
 
-[is-shorts],
-.ytp-ce-element {
-    display: none !important;
+/* Only apply custom columns when explicitly enabled */
+html[style*="--apply-custom-columns: true"] ytd-rich-grid-renderer,
+html[style*="--apply-custom-columns: true"] ytd-rich-shelf-renderer {
+  --ytd-rich-grid-items-per-row: var(--youtube-columns, 5) !important;
+}
+
+/* Hide shorts and end recommendations when data-hidden is true */
+[is-shorts][data-hidden="true"],
+.ytp-ce-element[data-hidden="true"] {
+  display: none !important;
 }
