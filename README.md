@@ -18,6 +18,7 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 - **Responsive Design**: Custom columns now only apply above a configurable minimum screen width threshold
 - **Hide YouTube Shorts**: Added option to hide Shorts content from your feed
 - **Hide End Recommendations**: Added option to hide video recommendations that appear at the end of videos
+- **Auto Skip to Start**: Automatically jump to 10% or 20% of the video timeline when it starts (like pressing keyboard keys 1 or 2)
 - **Improved Performance**: Added debounce to resize events for better performance
 - **Dynamic Content Handling**: Added mutation observer to handle dynamically loaded content
 - **Enhanced UI**: Exposed the "Save" button to the main action buttons group when screen width is above the minimum threshold
@@ -38,7 +39,8 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 2. Adjust the number of columns (1-10)
 3. Set the minimum screen width at which custom columns will be applied
 4. Toggle options to hide Shorts and end recommendations
-5. Click "Save" to apply your settings
+5. Enable "Auto Skip to Start" and choose 10% or 20% to automatically jump to that point when videos load
+6. Click "Save" to apply your settings
 
 ## Default Settings
 
@@ -46,6 +48,8 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 - **Minimum Screen Width**: 1740px
 - **Hide Shorts**: Enabled
 - **Hide End Recommendations**: Enabled
+- **Auto Skip to Start**: Disabled
+- **Skip Percentage**: 10%
 - **UI Enhancements**: Applied when screen width is above 1440px
 
 ## License

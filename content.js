@@ -37,9 +37,59 @@
     });
   }
 
+  // Function to handle auto-skip functionality
+  function setupAutoSkip(autoSkip, skipPercentage) {
+    if (!autoSkip) return;
+
+    let processedVideos = new Set();
+
+    function handleVideoLoad() {
+      const video = document.querySelector("video.html5-main-video");
+      if (!video) return;
+
+      const videoId = new URLSearchParams(window.location.search).get("v");
+      if (!videoId || processedVideos.has(videoId)) return;
+
+      const skipToTime = () => {
+        if (video.duration && video.duration > 0 && video.currentTime < 1) {
+          const targetTime = (video.duration * skipPercentage) / 100;
+          video.currentTime = targetTime;
+          processedVideos.add(videoId);
+        }
+      };
+
+      // Try to skip when metadata is loaded
+      if (video.readyState >= 1) {
+        skipToTime();
+      } else {
+        video.addEventListener("loadedmetadata", skipToTime, { once: true });
+      }
+    }
+
+    // Handle initial page load
+    handleVideoLoad();
+
+    // Handle navigation (YouTube is a SPA)
+    let lastUrl = location.href;
+    new MutationObserver(() => {
+      const url = location.href;
+      if (url !== lastUrl) {
+        lastUrl = url;
+        setTimeout(handleVideoLoad, 500);
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
   // Get settings from storage
   chrome.storage.sync.get(
-    ["columns", "minScreenWidth", "hideShorts", "hideEndRecommendations"],
+    [
+      "columns",
+      "minScreenWidth",
+      "hideShorts",
+      "hideEndRecommendations",
+      "autoSkip",
+      "skipPercentage",
+    ],
     (result) => {
       const columns = result.columns || 5;
       const minScreenWidth =
@@ -51,6 +101,9 @@
         result.hideShorts || false,
         result.hideEndRecommendations || false
       );
+
+      // Setup auto-skip functionality
+      setupAutoSkip(result.autoSkip || false, result.skipPercentage || 10);
 
       // Add resize event listener with debounce to improve performance
       let resizeTimeout;
