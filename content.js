@@ -174,5 +174,155 @@
     });
   }
 
+  function setupResizablePlaylist() {
+    const playlistContainerSelector = "#panels-full-bleed-container";
+    const playlistSelector = "#playlist"; // Keeping this for reference if needed
+    const playerContainerSelector = "#player-full-bleed-container";
+    const fullBleedContainerSelector = "#full-bleed-container";
+
+    // CSS for the drag handle and resize behavior
+    const style = document.createElement("style");
+    style.textContent = `
+      #playlist-resize-handle {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 10px;
+        cursor: ew-resize;
+        z-index: 9999;
+        background: transparent;
+        transition: background 0.2s;
+      }
+      #playlist-resize-handle:hover, #playlist-resize-handle.dragging {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      ${playlistContainerSelector} {
+        position: relative;
+        /* Ensure min-width doesn't fight us, or set a reasonable one */
+        min-width: 200px; 
+      }
+    `;
+    document.head.appendChild(style);
+
+    function initHandle() {
+      const container = document.querySelector(playlistContainerSelector);
+      if (!container) return;
+
+      if (container.querySelector("#playlist-resize-handle")) return;
+
+      const handle = document.createElement("div");
+      handle.id = "playlist-resize-handle";
+      container.appendChild(handle);
+
+      let isDragging = false;
+      let startX, startWidth;
+
+      handle.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startWidth = container.offsetWidth;
+        handle.classList.add("dragging");
+
+        // Prevent text selection during drag
+        document.body.style.userSelect = "none";
+        document.body.style.cursor = "ew-resize";
+
+        e.preventDefault();
+      });
+
+      // Simple throttle implementation
+      let lastFrameTime = 0;
+      function throttle(callback) {
+        const now = Date.now();
+        if (now - lastFrameTime >= 16) {
+          // ~60fps
+          callback();
+          lastFrameTime = now;
+        }
+      }
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+
+        throttle(() => {
+          // Calculate new width:
+          const dx = startX - e.clientX;
+          const newWidth = startWidth + dx;
+
+          // Min/Max constraints
+          if (newWidth > 200 && newWidth < 800) {
+            container.style.width = `${newWidth}px`;
+
+            // Update player width responsively
+            const fullBleedContainer = document.querySelector(
+              fullBleedContainerSelector
+            );
+            const playerContainer = document.querySelector(
+              playerContainerSelector
+            );
+
+            if (fullBleedContainer && playerContainer) {
+              const availableWidth = fullBleedContainer.clientWidth;
+              // Just simple subtraction might be enough if they are side-by-side in full-bleed
+              const newPlayerWidth = availableWidth - newWidth;
+              playerContainer.style.width = `${newPlayerWidth}px`;
+            }
+          }
+        });
+      });
+
+      document.addEventListener("mouseup", () => {
+        if (isDragging) {
+          isDragging = false;
+          handle.classList.remove("dragging");
+          document.body.style.userSelect = "";
+          document.body.style.cursor = "";
+
+          chrome.storage.sync.set({ playlistWidth: container.style.width });
+
+          // Trigger a window resize event to force YouTube to re-layout internal components (like the player controls/scrubber)
+          window.dispatchEvent(new Event("resize"));
+        }
+      });
+    }
+
+    // Attempt to init immediately and on navigation
+    initHandle();
+
+    // Restore saved width
+    // We probably want to apply the player width adjustment here too if we can
+    chrome.storage.sync.get(["playlistWidth"], (result) => {
+      if (result.playlistWidth) {
+        const container = document.querySelector(playlistContainerSelector);
+        if (container) {
+          container.style.width = result.playlistWidth;
+
+          // Also try to set initial player width to match
+          setTimeout(() => {
+            const fullBleedContainer = document.querySelector(
+              fullBleedContainerSelector
+            );
+            const playerContainer = document.querySelector(
+              playerContainerSelector
+            );
+            if (fullBleedContainer && playerContainer) {
+              const widthVal = parseInt(result.playlistWidth);
+              if (!isNaN(widthVal)) {
+                const availableWidth = fullBleedContainer.clientWidth;
+                const newPlayerWidth = availableWidth - widthVal;
+                playerContainer.style.width = `${newPlayerWidth}px`;
+              }
+            }
+          }, 500); // Wait a bit for page to settle
+        }
+      }
+    });
+
+    // Re-run init on periodic check
+    setInterval(initHandle, 2000);
+  }
+
+  setupResizablePlaylist();
   setupKeyboardShortcuts();
 })();
