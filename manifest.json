@@ -9,7 +9,13 @@
     {
       "matches": ["https://www.youtube.com/*"],
       "css": ["styles.css", "youtube-ui-mod.css"],
-      "js": ["content.js", "youtube-ui-mod.js"]
+      "js": [
+        "content.js",
+        "youtube-ui-mod.js",
+        "playlist-resize.js",
+        "keyboard-shortcuts.js",
+        "tooltip.js"
+      ]
     }
   ],
   "action": {
