@@ -175,8 +175,10 @@
   }
 
   function setupResizablePlaylist() {
+    const PLAYLIST_MIN_WIDTH = 150;
+    const PLAYLIST_MIN_WIDTH_MINIMIZED = 300;
+    const PLAYLIST_MAX_WIDTH = 800;
     const playlistContainerSelector = "#panels-full-bleed-container";
-    const playlistSelector = "#playlist"; // Keeping this for reference if needed
     const playerContainerSelector = "#player-full-bleed-container";
     const fullBleedContainerSelector = "#full-bleed-container";
 
@@ -200,7 +202,11 @@
       ${playlistContainerSelector} {
         position: relative;
         /* Ensure min-width doesn't fight us, or set a reasonable one */
-        min-width: 200px; 
+        min-width: ${PLAYLIST_MIN_WIDTH}px; 
+      }
+      ${playlistContainerSelector}.playlist-minimized #video-title,
+      ${playlistContainerSelector}.playlist-minimized #byline-container {
+        display: none !important;
       }
     `;
     document.head.appendChild(style);
@@ -251,8 +257,14 @@
           const newWidth = startWidth + dx;
 
           // Min/Max constraints
-          if (newWidth > 200 && newWidth < 800) {
+          if (newWidth > PLAYLIST_MIN_WIDTH && newWidth < PLAYLIST_MAX_WIDTH) {
             container.style.width = `${newWidth}px`;
+
+            if (newWidth <= PLAYLIST_MIN_WIDTH_MINIMIZED) {
+              container.classList.add("playlist-minimized");
+            } else {
+              container.classList.remove("playlist-minimized");
+            }
 
             // Update player width responsively
             const fullBleedContainer = document.querySelector(
@@ -298,6 +310,12 @@
         if (container) {
           container.style.width = result.playlistWidth;
 
+          if (parseInt(result.playlistWidth) <= PLAYLIST_MIN_WIDTH_MINIMIZED) {
+            container.classList.add("playlist-minimized");
+          } else {
+            container.classList.remove("playlist-minimized");
+          }
+
           // Also try to set initial player width to match
           setTimeout(() => {
             const fullBleedContainer = document.querySelector(
@@ -323,6 +341,96 @@
     setInterval(initHandle, 2000);
   }
 
+  function setupTooltip() {
+    const tooltip = document.createElement("div");
+    tooltip.id = "yt-custom-tooltip";
+    document.body.appendChild(tooltip);
+
+    const playlistContainerSelector = "#panels-full-bleed-container";
+
+    function updateTooltip(e) {
+      const container = document.querySelector(playlistContainerSelector);
+      if (!container || !container.classList.contains("playlist-minimized")) {
+        tooltip.style.display = "none";
+        return;
+      }
+
+      // Find the ytd-playlist-panel-video-renderer element
+      const videoItem = e.target.closest("ytd-playlist-panel-video-renderer");
+      if (!videoItem) {
+        tooltip.style.display = "none";
+        return;
+      }
+
+      // Only show if we are actually hovering over the item (double check not needed due to mouseenter/leave but safe)
+      const titleElement = videoItem.querySelector("#video-title");
+      if (!titleElement) return;
+
+      tooltip.textContent = titleElement.innerText.trim();
+      tooltip.style.display = "block";
+
+      // Position logic: left of the video item
+      const rect = videoItem.getBoundingClientRect();
+      const tooltipRect = tooltip.getBoundingClientRect();
+
+      // Calculate positions
+      let top = rect.top + (rect.height - tooltipRect.height) / 2;
+      let left = rect.left - tooltipRect.width - 10; // 10px gap
+
+      // Ensure it doesn't go off-screen
+      if (left < 10) left = 10;
+      if (top < 10) top = 10;
+      if (top + tooltipRect.height > window.innerHeight - 10) {
+        top = window.innerHeight - 10 - tooltipRect.height;
+      }
+
+      tooltip.style.top = `${top}px`;
+      tooltip.style.left = `${left}px`;
+    }
+
+    function hideTooltip() {
+      tooltip.style.display = "none";
+    }
+
+    // Use event delegation for dynamic content
+    document.addEventListener("mouseover", (e) => {
+      const container = document.querySelector(playlistContainerSelector);
+      if (
+        container &&
+        container.classList.contains("playlist-minimized") &&
+        e.target.closest("ytd-playlist-panel-video-renderer")
+      ) {
+        updateTooltip(e);
+      } else {
+        hideTooltip();
+      }
+    });
+
+    document.addEventListener("mouseout", (e) => {
+      const container = document.querySelector(playlistContainerSelector);
+      if (
+        container &&
+        container.classList.contains("playlist-minimized") &&
+        e.target.closest("ytd-playlist-panel-video-renderer")
+      ) {
+        // Do nothing if moving within the same item?
+        // Actually mouseout bubbles, so we might hide it unnecessarily.
+        // Better to just hide if we leave the item.
+        if (
+          !e.relatedTarget ||
+          !e.relatedTarget.closest("ytd-playlist-panel-video-renderer")
+        ) {
+          hideTooltip();
+        }
+      }
+    });
+
+    // We can also just use mousemove if we want it to follow the mouse, but fixed position relative to item is better requested: "on the left of the video width"
+    // The current implementation calculates position on mouseover (which acts like mouseenter for the element due to closest check).
+    // If the tooltip needs to stay while hovering, we are good.
+  }
+
   setupResizablePlaylist();
   setupKeyboardShortcuts();
+  setupTooltip();
 })();

@@ -13,3 +13,20 @@ html[style*="--apply-custom-columns: true"] ytd-rich-shelf-renderer {
 .ytp-ce-element[data-hidden="true"] {
   display: none !important;
 }
+
+#yt-custom-tooltip {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 1.3rem;
+  max-width: 400px;
+  white-space: normal;
+  z-index: 10000;
+  pointer-events: none;
+  font-family: "Roboto", "Arial", sans-serif;
+  line-height: 1.5;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  display: none;
+}
