@@ -34,6 +34,6 @@ html[data-yt-ui-mod="true"] .yt-dropdown-save-option {
 
 /* Limit height and add scroll for shelf content (Shorts in Subscription) */
 #dismissible.style-scope.ytd-rich-shelf-renderer {
-  max-height: 400px;
+  max-height: 200px;
   overflow: auto;
 }

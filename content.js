@@ -221,6 +221,39 @@
       handle.id = "playlist-resize-handle";
       container.appendChild(handle);
 
+      // Restore saved width immediately when handle (and thus valid container) is found
+      chrome.storage.sync.get(["playlistWidth"], (result) => {
+        if (result.playlistWidth) {
+          container.style.width = result.playlistWidth;
+
+          if (parseInt(result.playlistWidth) <= PLAYLIST_MIN_WIDTH_MINIMIZED) {
+            container.classList.add("playlist-minimized");
+          } else {
+            container.classList.remove("playlist-minimized");
+          }
+
+          // Also try to set initial player width to match
+          const fullBleedContainer = document.querySelector(
+            fullBleedContainerSelector
+          );
+          const playerContainer = document.querySelector(
+            playerContainerSelector
+          );
+          if (fullBleedContainer && playerContainer) {
+            const widthVal = parseInt(result.playlistWidth);
+            if (!isNaN(widthVal)) {
+              // If we can get clientWidth, great. If not, this might be 0 if hidden?
+              // But initHandle is likely called when visible.
+              const availableWidth = fullBleedContainer.clientWidth;
+              if (availableWidth > 0) {
+                const newPlayerWidth = availableWidth - widthVal;
+                playerContainer.style.width = `${newPlayerWidth}px`;
+              }
+            }
+          }
+        }
+      });
+
       let isDragging = false;
       let startX, startWidth;
 
@@ -304,38 +337,7 @@
 
     // Restore saved width
     // We probably want to apply the player width adjustment here too if we can
-    chrome.storage.sync.get(["playlistWidth"], (result) => {
-      if (result.playlistWidth) {
-        const container = document.querySelector(playlistContainerSelector);
-        if (container) {
-          container.style.width = result.playlistWidth;
-
-          if (parseInt(result.playlistWidth) <= PLAYLIST_MIN_WIDTH_MINIMIZED) {
-            container.classList.add("playlist-minimized");
-          } else {
-            container.classList.remove("playlist-minimized");
-          }
-
-          // Also try to set initial player width to match
-          setTimeout(() => {
-            const fullBleedContainer = document.querySelector(
-              fullBleedContainerSelector
-            );
-            const playerContainer = document.querySelector(
-              playerContainerSelector
-            );
-            if (fullBleedContainer && playerContainer) {
-              const widthVal = parseInt(result.playlistWidth);
-              if (!isNaN(widthVal)) {
-                const availableWidth = fullBleedContainer.clientWidth;
-                const newPlayerWidth = availableWidth - widthVal;
-                playerContainer.style.width = `${newPlayerWidth}px`;
-              }
-            }
-          }, 500); // Wait a bit for page to settle
-        }
-      }
-    });
+    // Restore moved to initHandle to ensure it runs on every new container found
 
     // Re-run init on periodic check
     setInterval(initHandle, 2000);
@@ -413,9 +415,6 @@
         container.classList.contains("playlist-minimized") &&
         e.target.closest("ytd-playlist-panel-video-renderer")
       ) {
-        // Do nothing if moving within the same item?
-        // Actually mouseout bubbles, so we might hide it unnecessarily.
-        // Better to just hide if we leave the item.
         if (
           !e.relatedTarget ||
           !e.relatedTarget.closest("ytd-playlist-panel-video-renderer")
@@ -424,10 +423,6 @@
         }
       }
     });
-
-    // We can also just use mousemove if we want it to follow the mouse, but fixed position relative to item is better requested: "on the left of the video width"
-    // The current implementation calculates position on mouseover (which acts like mouseenter for the element due to closest check).
-    // If the tooltip needs to stay while hovering, we are good.
   }
 
   setupResizablePlaylist();
