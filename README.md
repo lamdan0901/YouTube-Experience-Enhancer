@@ -1,6 +1,6 @@
-# YouTube Columns Adjuster
+# YouTube Experience Enhancer
 
-A browser extension that allows you to customize the YouTube browsing experience by adjusting the number of video columns displayed on the page.
+A browser extension that allows you to customize the YouTube browsing experience.
 
 ## Project History
 
