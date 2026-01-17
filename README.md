@@ -15,13 +15,19 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 
 ### My Enhancements
 
-- **Responsive Design**: Custom columns now only apply above a configurable minimum screen width threshold
-- **Hide YouTube Shorts**: Added option to hide Shorts content from your feed
-- **Hide End Recommendations**: Added option to hide video recommendations that appear at the end of videos
-- **Auto Skip to Start**: Automatically jump to 10% or 20% of the video timeline when it starts (like pressing keyboard keys 1 or 2)
-- **Improved Performance**: Added debounce to resize events for better performance
-- **Dynamic Content Handling**: Added mutation observer to handle dynamically loaded content
-- **Enhanced UI**: Exposed the "Save" button to the main action buttons group when screen width is above the minimum threshold
+- **Resizable Playlist**: Drag the left border of the playlist in Cinema/Full Bleed mode to resize it to your liking.
+- **Minimalist Mode**: Video titles and channel names automatically hide when the playlist is shrunk, providing a cleaner, more focused view.
+- **Smart Tooltips**: Hover over videos when in Minimalist Mode to reveal the full video title.
+- **Keyboard Shortcuts (Fullscreen)**:
+  - `P`: Toggle playlist visibility.
+  - `X`: Toggle comments visibility.
+- **Persistent Layout**: Your preferred playlist width is automatically saved and restored.
+- **Responsive Design**: Custom columns apply above a configurable minimum screen width threshold.
+- **Hide YouTube Shorts**: Option to hide Shorts content from your feed.
+- **Hide End Recommendations**: Option to hide video recommendations at the end of videos.
+- **Auto Skip to Start**: Automatically jump to 10% or 20% of the video timeline when it starts.
+- **Improved Performance**: Debounced resize events and mutation observer for dynamic content.
+- **Enhanced UI**: Responsive "Save" button placement and improved controls.
 
 ## Installation
 
@@ -40,7 +46,9 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 3. Set the minimum screen width at which custom columns will be applied
 4. Toggle options to hide Shorts and end recommendations
 5. Enable "Auto Skip to Start" and choose 10% or 20% to automatically jump to that point when videos load
-6. Click "Save" to apply your settings
+6. **Resize Playlist**: In Cinema or Full Bleed mode, hover over the left edge of the playlist and drag to resize.
+7. **Fullscreen Shortcuts**: Use `P` to toggle the playlist and `X` to toggle comments while in fullscreen mode.
+8. Click "Save" to apply your settings
 
 ## Default Settings
 
