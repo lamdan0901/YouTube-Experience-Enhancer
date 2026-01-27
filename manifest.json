@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "YouTube Columns Adjuster",
+  "name": "YouTube Experience Enhancer",
   "version": "0.1",
   "description": "Adjust the number of video columns on YouTube",
   "author": "TuanMinPay",
@@ -14,7 +14,8 @@
         "youtube-ui-mod.js",
         "playlist-resize.js",
         "keyboard-shortcuts.js",
-        "tooltip.js"
+        "tooltip.js",
+        "guide-siblings-hide.js"
       ]
     }
   ],
