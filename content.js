@@ -41,43 +41,26 @@
   function setupAutoSkip(autoSkip, skipPercentage) {
     if (!autoSkip) return;
 
-    let processedVideos = new Set();
+    // YouTube reuses one <video> element across SPA navigations and swaps its
+    // src, so "loadedmetadata" is the only reliable per-video signal: it fires
+    // for every video with currentTime 0 and the new duration already set.
+    // Media events don't bubble, but a capture-phase listener on document still
+    // receives them, so we never have to locate or re-bind the element.
+    // ponytail: no retry if YouTube stomps currentTime after metadata; add a
+    // one-shot "playing" re-assert only if that turns out to happen.
+    document.addEventListener(
+      "loadedmetadata",
+      (e) => {
+        const video = e.target;
+        if (!video.matches?.("video.html5-main-video")) return;
+        if (!video.duration || video.duration <= 0) return;
+        // Respect an explicit timestamp in the URL (e.g. shared ?t=90 links)
+        if (new URLSearchParams(location.search).has("t")) return;
 
-    function handleVideoLoad() {
-      const video = document.querySelector("video.html5-main-video");
-      if (!video) return;
-
-      const videoId = new URLSearchParams(window.location.search).get("v");
-      if (!videoId || processedVideos.has(videoId)) return;
-
-      const skipToTime = () => {
-        if (video.duration && video.duration > 0 && video.currentTime < 1) {
-          const targetTime = (video.duration * skipPercentage) / 100;
-          video.currentTime = targetTime;
-          processedVideos.add(videoId);
-        }
-      };
-
-      // Try to skip when metadata is loaded
-      if (video.readyState >= 1) {
-        skipToTime();
-      } else {
-        video.addEventListener("loadedmetadata", skipToTime, { once: true });
-      }
-    }
-
-    // Handle initial page load
-    handleVideoLoad();
-
-    // Handle navigation (YouTube is a SPA)
-    let lastUrl = location.href;
-    new MutationObserver(() => {
-      const url = location.href;
-      if (url !== lastUrl) {
-        lastUrl = url;
-        setTimeout(handleVideoLoad, 500);
-      }
-    }).observe(document.body, { childList: true, subtree: true });
+        video.currentTime = (video.duration * skipPercentage) / 100;
+      },
+      true
+    );
   }
 
   // Get settings from storage
