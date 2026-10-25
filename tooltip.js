@@ -6,7 +6,7 @@
     tooltip.id = "yt-custom-tooltip";
     document.body.appendChild(tooltip);
 
-    const playlistContainerSelector = "#panels-full-bleed-container";
+    const playlistContainerSelector = "ytd-playlist-panel-renderer";
 
     function updateTooltip(e) {
       const container = document.querySelector(playlistContainerSelector);
@@ -26,7 +26,7 @@
       const titleElement = videoItem.querySelector("#video-title");
       if (!titleElement) return;
 
-      tooltip.textContent = titleElement.innerText.trim();
+      tooltip.textContent = titleElement.textContent.trim();
       tooltip.style.display = "block";
 
       // Position logic: left of the video item

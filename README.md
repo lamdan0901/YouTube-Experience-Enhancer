@@ -15,13 +15,13 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 
 ### My Enhancements
 
-- **Resizable Playlist**: Drag the left border of the playlist in Cinema/Full Bleed mode to resize it to your liking.
+- **Resizable Player and Playlist**: Drag the player or playlist edges to adjust their width and height in standard and theater modes. In the standard two-column layout, their widths share the available space.
 - **Minimalist Mode**: Video titles and channel names automatically hide when the playlist is shrunk, providing a cleaner, more focused view.
 - **Smart Tooltips**: Hover over videos when in Minimalist Mode to reveal the full video title.
 - **Keyboard Shortcuts (Fullscreen)**:
   - `P`: Toggle playlist visibility.
   - `X`: Toggle comments visibility.
-- **Persistent Layout**: Your preferred playlist width is automatically saved and restored.
+- **Persistent Local Layout**: Player and playlist sizes are saved in `chrome.storage.local` on this computer and restored after reloads and video navigation. Existing synced playlist widths are preserved when upgrading; other preferences still use Chrome Sync.
 - **Responsive Design**: Custom columns apply above a configurable minimum screen width threshold.
 - **Hide YouTube Shorts**: Option to hide Shorts content from your feed.
 - **Hide End Recommendations**: Option to hide video recommendations at the end of videos.
@@ -46,7 +46,7 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 3. Set the minimum screen width at which custom columns will be applied
 4. Toggle options to hide Shorts and end recommendations
 5. Enable "Auto Skip to Start" and choose 10% or 20% to automatically jump to that point when videos load
-6. **Resize Playlist**: In Cinema or Full Bleed mode, hover over the left edge of the playlist and drag to resize.
+6. **Resize Player and Playlist**: Drag the playlist's left edge or the player's right edge to change width. In the standard layout, changing width also fits the player's height to the video's aspect ratio and moves the section below it. Drag either panel's bottom edge to set a custom height. Tab to a resize handle and use arrow keys for 16px adjustments. Double-click an edge to restore YouTube's default size for that dimension. Fullscreen keeps YouTube's native layout.
 7. **Fullscreen Shortcuts**: Use `P` to toggle the playlist and `X` to toggle comments while in fullscreen mode.
 8. Click "Save" to apply your settings
 
@@ -59,6 +59,14 @@ This project is a fork of the original YouTube Columns Adjuster extension create
 - **Auto Skip to Start**: Disabled
 - **Skip Percentage**: 10%
 - **UI Enhancements**: Applied when screen width is above 1440px
+
+## Resize Verification
+
+Run `node --test tests/watch-resize.test.cjs` to check migration from the previous synced width and precedence of local settings.
+
+On a standard two-column YouTube playlist page, select this extension's content-script context in Chrome DevTools. Evaluate the function in `tests/watch-resize.browser.js` and invoke it. It checks actual panel dimensions, local storage, and switching between standard and theater modes. The check adjusts saved sizes. Also verify pointer dragging, page reload, video navigation, a narrower window, and fullscreen manually.
+
+For YouTube's newer fixed-sidebar layout, run `tests/watch-resize-fixed.browser.js` in the same context. It also verifies that panel spacers align and all resize handles are reachable above the native playlist.
 
 ## License
 

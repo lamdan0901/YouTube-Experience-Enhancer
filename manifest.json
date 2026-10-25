@@ -12,7 +12,7 @@
       "js": [
         "content.js",
         "youtube-ui-mod.js",
-        "playlist-resize.js",
+        "watch-resize.js",
         "keyboard-shortcuts.js",
         "tooltip.js",
         "guide-siblings-hide.js"

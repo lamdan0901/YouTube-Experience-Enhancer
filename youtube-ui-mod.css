@@ -37,3 +37,117 @@ html[data-yt-ui-mod="true"] .yt-dropdown-save-option {
   max-height: 200px;
   overflow: auto;
 }
+
+/* Watch-page dimensions are local to this Chrome profile. */
+ytd-watch-flexy[data-yt-sidebar-size] {
+  --ytd-watch-flexy-sidebar-width: var(--yt-layout-sidebar-width) !important;
+  --ytd-watch-flexy-sidebar-min-width: 150px !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size]:not([fullscreen]) #columns {
+  min-width: 0 !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size][is-two-columns_]:not([fullscreen]) #primary {
+  min-width: 0 !important;
+  max-width: none !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size]:not([fullscreen]) #player-container-outer {
+  min-width: 0 !important;
+  max-width: none !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size][is-two-columns_]:not([split-scroll]):not([fullscreen]) #secondary {
+  min-width: 0 !important;
+  width: var(--yt-layout-sidebar-width) !important;
+  flex: 0 0 var(--yt-layout-sidebar-width) !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size][split-scroll]:not([fullscreen]) #secondary-split-scroll-spacer {
+  min-width: 0 !important;
+  max-width: none !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size][split-scroll] #columns::after {
+  transition: none !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size]:not([fullscreen]) #panels-full-bleed-container {
+  min-width: 0 !important;
+  width: var(--yt-layout-sidebar-width) !important;
+  flex-shrink: 0 !important;
+}
+ytd-watch-flexy #secondary-inner,
+ytd-watch-flexy #panels-full-bleed-container,
+ytd-watch-flexy ytd-playlist-panel-renderer {
+  position: relative;
+}
+ytd-watch-flexy[data-yt-player-size]:not([theater]):not([fullscreen]) #player-container-outer {
+  height: var(--yt-layout-player-height) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+ytd-watch-flexy[data-yt-player-size]:not([theater]):not([fullscreen]) #player-container-inner {
+  padding-top: 0 !important;
+  height: 100% !important;
+}
+ytd-watch-flexy[data-yt-player-size][data-yt-full-bleed]:not([fullscreen]) #full-bleed-container {
+  height: var(--yt-layout-player-height) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+ytd-watch-flexy[data-yt-theater-size][data-yt-full-bleed]:not([fullscreen]) #player-full-bleed-container {
+  width: var(--yt-layout-theater-width) !important;
+  flex: 0 1 var(--yt-layout-theater-width) !important;
+  margin-inline: auto;
+}
+ytd-watch-flexy[data-yt-playlist-size]:not([fullscreen]) ytd-playlist-panel-renderer:not([collapsed]) {
+  height: var(--yt-layout-playlist-height) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  flex: none !important;
+}
+ytd-watch-flexy[data-yt-playlist-size]:not([fullscreen]) ytd-playlist-panel-renderer > #container {
+  height: 100% !important;
+  max-height: none !important;
+}
+ytd-playlist-panel-renderer.playlist-minimized #video-title,
+ytd-playlist-panel-renderer.playlist-minimized #byline-container {
+  display: none !important;
+}
+.yt-layout-handle {
+  position: absolute;
+  /* The native fixed playlist uses z-index: 600. */
+  z-index: 601;
+  touch-action: none;
+  border-radius: 4px;
+}
+.yt-layout-handle:hover,
+.yt-layout-handle:focus-visible {
+  background: var(--yt-spec-call-to-action, #3ea6ff);
+  outline: 2px solid var(--yt-spec-call-to-action, #3ea6ff);
+  outline-offset: 1px;
+}
+.yt-layout-width {
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  cursor: ew-resize;
+}
+#yt-resize-sidebar { left: -8px; bottom: auto; }
+ytd-watch-flexy[split-scroll] #yt-resize-sidebar { left: 0; }
+#yt-resize-player-width { right: -7px; }
+ytd-watch-flexy[data-yt-full-bleed] #yt-resize-player-width { right: 0; }
+.yt-layout-height {
+  left: 12px;
+  right: 12px;
+  bottom: -6px;
+  height: 10px;
+  cursor: ns-resize;
+}
+ytd-watch-flexy[split-scroll] #yt-resize-playlist-height { bottom: 0; }
+ytd-watch-flexy:not([is-two-columns_]) #yt-resize-sidebar,
+ytd-watch-flexy:not([is-two-columns_]):not([data-yt-full-bleed]) #yt-resize-player-width,
+ytd-watch-flexy[fullscreen] .yt-layout-handle,
+html:has(:fullscreen) .yt-layout-handle {
+  display: none !important;
+}
+html.yt-layout-dragging,
+html.yt-layout-dragging * {
+  cursor: var(--yt-layout-cursor) !important;
+  user-select: none !important;
+}
