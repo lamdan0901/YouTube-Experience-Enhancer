@@ -66,7 +66,7 @@ Run `node --test tests/watch-resize.test.cjs` to check migration from the previo
 
 On a standard two-column YouTube playlist page, select this extension's content-script context in Chrome DevTools. Evaluate the function in `tests/watch-resize.browser.js` and invoke it. It checks actual panel dimensions, local storage, and switching between standard and theater modes. The check adjusts saved sizes. Also verify pointer dragging, page reload, video navigation, a narrower window, and fullscreen manually.
 
-For YouTube's newer fixed-sidebar layout, run `tests/watch-resize-fixed.browser.js` in the same context. It also verifies that panel spacers align and all resize handles are reachable above the native playlist.
+For YouTube's newer fixed-sidebar layout, run `tests/watch-resize-fixed.browser.js` in the same context. Also run it in a wide window (2560px or wider) with the right-side rail visible. It verifies that resizing shares the available page width, panel spacers align, and all resize handles are reachable above the native playlist.
 
 ## License
 

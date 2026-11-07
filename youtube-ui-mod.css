@@ -45,6 +45,8 @@ ytd-watch-flexy[data-yt-sidebar-size] {
 }
 ytd-watch-flexy[data-yt-sidebar-size]:not([fullscreen]) #columns {
   min-width: 0 !important;
+  /* A sidebar-dependent cap shrinks the whole layout during width resizing. */
+  max-width: none !important;
 }
 ytd-watch-flexy[data-yt-sidebar-size][is-two-columns_]:not([fullscreen]) #primary {
   min-width: 0 !important;
@@ -61,6 +63,9 @@ ytd-watch-flexy[data-yt-sidebar-size][is-two-columns_]:not([split-scroll]):not([
 }
 ytd-watch-flexy[data-yt-sidebar-size][split-scroll]:not([fullscreen]) #secondary-split-scroll-spacer {
   min-width: 0 !important;
+  max-width: none !important;
+}
+ytd-watch-flexy[data-yt-sidebar-size][split-scroll]:not([fullscreen]) #secondary {
   max-width: none !important;
 }
 ytd-watch-flexy[data-yt-sidebar-size][split-scroll] #columns::after {

@@ -15,6 +15,10 @@
   const watch = document.querySelector("ytd-watch-flexy[split-scroll]");
   assert(watch, "Run on the new fixed-sidebar layout");
   const saved = (await chrome.storage.local.get("watchLayout")).watchLayout;
+  assert(Math.abs(rect("ytd-watch-flexy #columns").width - watch.clientWidth) < 2,
+    "Custom widths must use the available page width, including wide windows with the side rail");
+  assert(Math.abs(rect("ytd-watch-flexy #secondary").width - rect("ytd-watch-flexy #columns").width) < 2,
+    "The fixed sidebar and player columns must use the same available width");
   assert(Math.abs(rect("ytd-watch-flexy #secondary-inner").width - saved.playlistWidth) < 2,
     "Fixed sidebar must restore the saved width, including widths below 320px");
   assert(Math.abs(rect("ytd-playlist-panel-renderer").height - saved.playlistHeight) < 2,
@@ -63,6 +67,6 @@
     "The section below must move with the expanded player height");
   assert((await chrome.storage.local.get("watchLayout")).watchLayout.playerHeight === undefined,
     "Sidebar resizing must persist automatic height instead of the previous fixed height");
-  return { passed: 16, player: rect("ytd-watch-flexy #player").toJSON(),
+  return { passed: 18, player: rect("ytd-watch-flexy #player").toJSON(),
     playlist: rect("ytd-playlist-panel-renderer").toJSON() };
 })
